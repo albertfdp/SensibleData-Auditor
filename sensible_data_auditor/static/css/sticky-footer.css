@@ -1,0 +1,117 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  padding-top: 60px;
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 90px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+#footer.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.container {
+  width: 100%;
+}
+
+/*
+ * Sidebar
+ */
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: block;
+    padding: 20px;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a {
+  color: #fff;
+  background-color: #428bca;
+}
+
+.box-stats {
+  background: white;
+  position: relative;
+  text-align: right;
+  margin-bottom: 30px;
+  height: 70px;
+  border: 1px solid #e1e6ef;
+}
+
+.box-stats .box-stat-thumbnail {
+  width: 100px;
+  height: 68px;
+  padding: 15px 0;
+  text-align: center;
+  margin-right: 10px;
+  float: left;
+  overflow: hidden;
+}
+
+.box-stats .box-value {
+  padding-top: 16px;
+  font-size: 16px;
+}
+
+.box-stats .box-value, .box-stats .box-title {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.box-stats .box-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 3px 0px;
+}
+
+.box-stats .box-stat-thumbnail.box-info {
+  background: #36a9e1;
+}
+
+.box-stats .box-stat-thumbnail.box-warning {
+  background: #ed9c28;
+}
+
+.box-stats .box-stat-thumbnail.box-success {
+  background: #47a447;
+}
+
+.box-stats .box-stat-thumbnail.box-danger {
+  background: #d2322d;
+}

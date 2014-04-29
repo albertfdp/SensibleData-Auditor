@@ -8,4 +8,4 @@ SECURE_*
 ._*
 *.swp
 *.swo
-bower_components/*
+sensible_data_auditor/static/bower_components/*

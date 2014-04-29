@@ -1,0 +1,242 @@
+{
+    "name": "accesses",
+    "children": [
+{
+    "_id" : "534569953e89615674000007",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "user" : [ 
+            "a", 
+            "b", 
+            "c"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=ddb4a485c88f8471b1fc409bc21400&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:38:59.000Z"
+},
+{
+    "_id" : "5345699b3e89615674000009",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "user" : [ 
+            "a", 
+            "b", 
+            "c"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=ddb4a485c88f8471b1fc409bc21400&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:39:02.000Z"
+},
+{
+    "_id" : "534569f53e8961567400000b",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "audit__dot__user" : [ 
+            "a", 
+            "b", 
+            "c"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=ddb4a485c88f8471b1fc409bc21400&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:40:35.000Z"
+},
+
+{
+    "_id" : "53456b093e8961567400000d",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "c66a932629a9b8bd2cfe12ccfabe2c" : [ 
+            "5a2bb6fbcadf03ebc633f2bd3e3e1910ea71c791_c66a932629a9b8bd2cfe12ccfabe2c_86414", 
+            "bc5fe7d092804734bb195f2e783643bdf09cb677_c66a932629a9b8bd2cfe12ccfabe2c_86414"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=ddb4a485c88f8471b1fc409bc21400&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:45:12.000Z"
+},
+
+{
+    "_id" : "53456b453e89615674000012",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "c66a932629a9b8bd2cfe12ccfabe2c" : [ 
+            "5a2bb6fbcadf03ebc633f2bd3e3e1910ea71c791_c66a932629a9b8bd2cfe12ccfabe2c_86414", 
+            "bc5fe7d092804734bb195f2e783643bdf09cb677_c66a932629a9b8bd2cfe12ccfabe2c_86414"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=4854fc56a975aa07d305b14691ad4e&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:46:11.000Z"
+},
+{
+    "_id" : "53456b453e89615674000013",
+    "sys_module" : "audit",
+    "status" : {
+        "status" : "OK",
+        "code" : 200,
+        "desc" : ""
+    },
+    "users" : [ 
+        "all"
+    ],
+    "end_date" : null,
+    "format" : "pretty",
+    "fields" : {
+        "data__dot__LOCATION__dot__mAccuracy" : 1,
+        "data__dot__LOCATION__dot__geojson__dot__coordinates" : 1,
+        "data__dot__LOCATION__dot__mProvider" : 1,
+        "data__dot__TIMESTAMP" : 1,
+        "user" : 1,
+        "_id" : 1
+    },
+    "after" : null,
+    "sys_host" : "raman",
+    "results" : {
+        "cd55c9def355c1c56670876e4197d2" : [ 
+            "70f2b9ed2d54f763c5c67397391322be92eb0a26_cd55c9def355c1c56670876e4197d2_86415"
+        ]
+    },
+    "order" : 1,
+    "method" : "GET",
+    "limit" : 1000,
+    "sortby" : "data.TIMESTAMP",
+    "map_to_users" : false,
+    "path" : "/albert/sensible-dtu/connectors/connector_raw/v1/location/?bearer_token=4854fc56a975aa07d305b14691ad4e&format=pretty&decrypted=false&order=1&limit=1000&",
+    "sys_name" : "audit.sensible",
+    "start_date" : null,
+    "time" : "2014-04-09T15:46:11.000Z"
+}
+]}

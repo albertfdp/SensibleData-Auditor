@@ -1,0 +1,19 @@
+{
+  "name": "sensible_data_auditor",
+  "version": "0.0.0",
+  "authors": [
+    "Albert Fernández <albertfdp@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "dcjs": "~1.6.0"
+  }
+}
