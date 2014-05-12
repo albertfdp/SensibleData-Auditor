@@ -9,3 +9,4 @@ SECURE_*
 *.swp
 *.swo
 sensible_data_auditor/static/bower_components/*
+*.sqlite3

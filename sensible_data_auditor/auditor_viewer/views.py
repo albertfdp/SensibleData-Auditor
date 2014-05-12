@@ -8,5 +8,12 @@ def home(request):
 def dashboard(request):
     return render_to_response('dashboard.html', {}, context_instance=RequestContext(request))
 
+def dashboard_researchers(request):
+    return render_to_response('researchers.html', {}, context_instance=RequestContext(request))
+
+def dashboard_probes(request):
+    return render_to_response('accesses.html', {}, context_instance=RequestContext(request))
+
+
 def about(request):
     return render_to_response('about.html', {}, context_instance=RequestContext(request))

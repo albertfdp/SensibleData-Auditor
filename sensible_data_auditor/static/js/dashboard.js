@@ -83,9 +83,35 @@ function extract_resource(path) {
 }
 
 var DATA_URL = 'http://raman.imm.dtu.dk:8082/albert/apps/auditor_viewer/static/data/fake.json';
-
+var DATA_RESEARCHERS_URL = 'http://raman.imm.dtu.dk:8082/albert/apps/auditor_viewer/static/data/fake_researchers.json';
+/*
 var panel = $('#sensible-notification');
 panel.hide();
+
+var compositeChart = dc.compositeChart('#sensible-uniqueness-chart');
+
+d3.json(DATA_RESEARCHERS_URL)
+  .on('load', function(data) {
+
+    // clean data
+    data.children.forEach(function(d) {
+
+      d.time = new Date(d3.time.format.utc(d.time));
+      d.month = d3.time.month(d.time);
+      d.researcher = extract_researcher(d.path);
+      d.resource = extract_resource(d.path);
+
+    });
+
+    sensible.ndx = crossfilter(data.children);
+    sensible.dimensions.add('accesses', function(d) { return d._id; });
+    sensible.dimensions.add('researcher', function(d) { return d.researcher; });
+    sensible.dimensions.add('month', function(d) { return d.month});
+
+
+
+  })
+  .get();
 
 d3.json(DATA_URL)
   .on('progress', function() {
@@ -129,7 +155,7 @@ d3.json(DATA_URL)
       },
       function (p, v) {
         return { count : 0, absUniqueness : 0};
-      },
+      }
     ));
 
     // determine a histogram of percent changes
@@ -219,6 +245,8 @@ d3.json(DATA_URL)
         .dimension(sensible.dimensions.get('resource'))
         .group(sensible.groups.get('resourceCount'));
 
+    compositeChart.compose([sensible.charts.add('accessHistogram')]);
+
     dc.renderAll();
 
 
@@ -230,101 +258,4 @@ d3.json(DATA_URL)
       .empty().html('<p><strong>Error!</strong> Could not fetch data from server. Please try again.</p>').delay(2000).hide(600);
   })
   .get();
-
-/*
-d3.json(DATA_URL, function(error, data) {
-
-    buildTable(data.children);
-
-    data.children.forEach(function(d) {
-        d.time = new Date(d3.time.format.utc(d.time));
-
-        d.month = d3.time.month(d.time);
-
-        d.researcher = urlToResearcher(d.path);
-    });
-
-    var ndx = crossfilter(data.children);
-
-    var dimension = {};
-    var group = {};
-
-    dimension.accesses = ndx.dimension(function(d) {
-        return d._id;
-    });
-
-    dimension.researcher = ndx.dimension(function(d) {
-        return d.researcher;
-    });
-
-    dimension.date = ndx.dimension(function(d) {
-        return d.month;
-    });
-
-    group.id = dimension.accesses.groupAll().reduceCount();
-    group.researcher = dimension.researcher.group()
-        .reduceCount();
-    group.researcherAccesses = dimension.researcher.group().reduceCount(function(d) {
-        return d._id;
-    });
-
-    group.day = dimension.date.group().reduceCount();
-
-    var chartAuditCount = dc.numberDisplay('#audit-accesses');
-    chartAuditCount
-        .valueAccessor(function(d) { return d; })
-        .group(group.id);
-
-    var chartResearcherCount = dc.numberDisplay('#audit-researcher');
-    chartResearcherCount
-        .valueAccessor(function(d) {
-            return d.value;
-        })
-        .group(group.researcher);
-
-    var chartAccessHistogram = dc.barChart('#sensible-accesses-chart');
-    chartAccessHistogram
-        .dimension(dimension.date)
-        .group(group.day)
-        .height(400)
-        .width(600)
-        .transitionDuration(1000)
-        //.gap(1)
-        .elasticY(true)
-        .renderHorizontalGridLines(true)
-        .x(d3.time.scale().domain([new Date(2014, 0, 1), new Date(2014, 11, 31)]))
-        .round(d3.time.month.round)
-        .xUnits(d3.time.months)
-        .yAxisLabel('Number of accesses')
-        .xAxisLabel('Month');
-
-    var chartResearcherAccessesCount = dc.rowChart('#sensible-researcher-chart');
-    chartResearcherAccessesCount
-        .height(400)
-        .width(300)
-        .margins({top: 10, right: 50, bottom: 30, left: 0})
-        .dimension(dimension.accesses)
-        .group(group.researcherAccesses);
-
-    $('#progress-access').animate({ width: "80%" },1000);
-    $('#progress-unique').animate({ width: "60%" },1000);
-    $('#progress-views').animate({ width: "20%" },1000);
-
-    dc.renderAll();
-});
-
-function urlToResearcher(path) {
-    return (RegExp('bearer\_token' + '=' + '(.+?)(&|$)').exec(path)||[,null])[1];
-}
-
-
-function buildTable(records) {
-
-    $('#table-accesses').dynatable({
-        dataset: {
-            records: records,
-        }
-    });
-
-}
 */

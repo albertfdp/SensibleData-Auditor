@@ -13,9 +13,12 @@
     <div class="col-md-1 sidebar">
 
          <ul class="nav nav-sidebar">
-            <li class="active"><a href="{% url "dashboard" %}">Overview</a></li>
-            <li><a href="{% url "researchers" %}">Researchers</a></li>
+            <li><a href="{% url "dashboard" %}">Overview</a></li>
+            <li class="active"><a href="{% url "researchers" %}">Researchers</a></li>
             <li><a href="{% url "probes" %}">Probes</a></li>
+            <!--<li><a href="#">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li>-->
           </ul>
 
     </div>
@@ -70,7 +73,7 @@
     </div>
 
     <div class="row">
-        <div class="panel-stats col-md-8">
+        <div class="panel-stats col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">Accesses</div>
               <div class="panel-body">
@@ -79,69 +82,8 @@
               </div>
             </div>
             </div>
-        <div class="panel-stats col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">Accesses per Researcher</div>
-              <div class="panel-body text-center">
-                <div id="sensible-researcher-chart" class="sensible-chart" data-name="researchers" data-type="pieChart"></div>
-              </div>
-            </div>
-        </div>
-        <!--<div class="panel-stats col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Details</div>
-              <div class="panel-body">
-                <span>Accesses</span>
-                    <div class="progress">
-                      <div id="progress-access" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                        <span class="sr-only">0% Complete (success)</span>
-                      </div>
-                    </div>
 
-                    <span>Unique</span>
-                    <div class="progress">
-                      <div id="progress-unique" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                        <span class="sr-only">0% Complete (success)</span>
-                      </div>
-                    </div>
-
-                    <span>Views</span>
-                    <div class="progress">
-                      <div id="progress-views" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                        <span class="sr-only">0% Complete (success)</span>
-                      </div>
-                    </div>
-              </div>
-            </div>
-        </div>-->
-    </div>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">Resources</div>
-              <div class="panel-body">
-                <div id="sensible-resource-chart" class="sensible-chart" data-name="resource" data-type="rowChart"></div>
-              </div>
-            </div>
-        </div>
-
-         <div class="col-md-8">
-            <div class="panel panel-default">
-              <div class="panel-heading">Detail</div>
-              <div class="panel-body">
-                <table id="raw-data">
-                  <thead>
-                    <th>Researcher</th>
-                    <th>Date</th>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-        </div>
-
+        <div id="researchers"></div>
     </div>
 
     <hr />
@@ -162,5 +104,5 @@
 <script src="{% static "bower_components/crossfilter/crossfilter.js" %}" type="text/javascript"></script>
 <script src="{% static "bower_components/dcjs/dc.js" %}" type="text/javascript"></script>
 <script src="{% static "js/dashboard.js" %}" type="text/javascript"></script>
-<script src="{% static "js/audit.js" %}" type="text/javascript"></script>
+<script src="{% static "js/researchers.js" %}" type="text/javascript"></script>
 {% endblock %}
