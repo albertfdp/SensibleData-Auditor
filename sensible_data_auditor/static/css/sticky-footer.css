@@ -115,3 +115,7 @@ body {
 .box-stats .box-stat-thumbnail.box-danger {
   background: #d2322d;
 }
+
+.sensible-control {
+  margin: 5px 5px;
+}

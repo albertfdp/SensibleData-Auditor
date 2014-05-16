@@ -26,9 +26,10 @@
     <!-- content -->
     <div class="col-md-11">
 
-    <div class="row">
+    <div id="audit-error"></div>
 
-        <div class="col-md-3">
+    <div class="row">
+        <div class="col-md-4">
             <div class="box-stats">
                 <div class="box-stat-thumbnail box-info">
                     <div class="boxchart"><i class="fa fa-bar-chart-o fa-3x fa-inverse"></i></div>
@@ -40,7 +41,7 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box-stats">
                 <div class="box-stat-thumbnail box-warning">
                     <div class="boxchart"><i class="fa fa-users fa-3x fa-inverse"></i></div>
@@ -50,7 +51,7 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box-stats">
                 <div class="box-stat-thumbnail box-success">
                     <div class="boxchart"><i class="fa fa-eye fa-3x fa-inverse"></i></div>
@@ -59,31 +60,68 @@
                 <span class="box-title text-muted">Observations</span>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="box-stats">
-                <div class="box-stat-thumbnail box-danger">
-                    <div class="boxchart"><i class="fa fa-eye fa-3x fa-inverse"></i></div>
-                </div>
-                <span id="audit-unique" class="box-value text-primary">151230</span>
-                <span class="box-title text-muted">Unique</span>
-            </div>
-        </div>
-
     </div>
 
     <div class="row">
+
         <div class="panel-stats col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">Accesses</div>
               <div class="panel-body">
+                <div id="sensible-composite-chart" class="sensible-chart" data-name="accesses" data-type="barChart"></div>
                 <div id="sensible-accesses-chart" class="sensible-chart" data-name="accesses" data-type="barChart"></div>
-                <div id="sensible-accesses-date-chart" class="sensible-chart" data-name="accesses" data-type="barChart"></div>
               </div>
             </div>
             </div>
 
-        <div id="researchers"></div>
+        <div class="panel-stats col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Researchers</div>
+              <div class="panel-body">
+                <div id="sensible-researchers"></div>
+              </div>
+        </div>
+      </div>
+
+      <div class="panel-stats col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">Probes</div>
+            <div class="panel-body">
+              <div id="sensible-probes"></div>
+            </div>
+      </div>
+    </div>
+
+        <div class="panel-stats col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Probes</div>
+              <div class="panel-body">
+                <div id="sensible-probes-histogram"></div>
+              </div>
+        </div>
+        </div>
+
+        <!--<div class="panel-stats col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Controls</div>
+              <div class="panel-body">
+                <div id="sensible-controls" class="container">
+                    <div class="row sensible-control">
+                        <span><strong>Accesses</strong></span>
+                        <div id="control-accesses" class="btn-group" data-toggle="buttons">
+                          <label class="btn btn-primary">
+                            <input type="radio" name="options" id="requests"> API Requests
+                          </label>
+                          <label class="btn btn-primary">
+                            <input type="radio" name="options" id="count"> Data observations
+                          </label>
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+      </div>-->
+
     </div>
 
     <hr />
@@ -96,6 +134,9 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript">
+    var SENSIBLE_BEARER_TOKEN = "{{ tokens.bearer_token }}";
+</script>
 <script src="{% static "bower_components/jquery-ajax-singleton/jquery-ajax_singleton-0.0.3.min.js" %}" type="text/javascript"></script>
 <script src="{% static "bower_components/jquery.equalheights/jquery.equalheights.js" %}" type="text/javascript"></script>
 <script src="{% static "bower_components/dynatable/jquery.dynatable.js" %}" type="text/javascript"></script>
@@ -103,6 +144,7 @@
 <script src="{% static "bower_components/d3/d3.js" %}" type="text/javascript"></script>
 <script src="{% static "bower_components/crossfilter/crossfilter.js" %}" type="text/javascript"></script>
 <script src="{% static "bower_components/dcjs/dc.js" %}" type="text/javascript"></script>
+<script src="{% static "bower_components/colorbrewer/colorbrewer.js" %}" type="text/javascript"></script>
 <script src="{% static "js/dashboard.js" %}" type="text/javascript"></script>
 <script src="{% static "js/researchers.js" %}" type="text/javascript"></script>
 {% endblock %}
