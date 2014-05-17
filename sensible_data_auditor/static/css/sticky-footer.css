@@ -119,3 +119,7 @@ body {
 .sensible-control {
   margin: 5px 5px;
 }
+
+.dc-chart g.row text {
+  font-family: "Ionicons";
+}

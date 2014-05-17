@@ -14,6 +14,11 @@
     "tests"
   ],
   "dependencies": {
-    "dcjs": "~1.6.0"
+    "dcjs": "~1.6.0",
+    "colorbrewer": "~1.0.0",
+    "ionicons": "~1.4.1",
+    "bootstrap": "~3.1.1",
+    "jquery.equalheights": "~1.5.2",
+    "queue-async": "~1.0.7"
   }
 }

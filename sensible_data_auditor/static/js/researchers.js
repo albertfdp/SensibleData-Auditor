@@ -1,6 +1,15 @@
 DATA_USER_URL = 'http://raman.imm.dtu.dk:8081/albert/sensible-dtu/audit/researchers/user';
 DATA_RESEARCHERS_URL = 'http://raman.imm.dtu.dk:8081/albert/sensible-dtu/audit/researchers';
 
+var PROBE_SYMBOLS = {
+  bluetooth : '\uf116',
+  location : '\uf1ff',
+  facebook : '\uf231',
+  calllog : '\uf1e6',
+  sms : '\uf2e1',
+  questionnaire : '\uf12e'
+}
+
 queue()
   .defer(d3.json, DATA_USER_URL + '?bearer_token=' + SENSIBLE_BEARER_TOKEN)
   .defer(d3.json, DATA_RESEARCHERS_URL + '?bearer_token=' + SENSIBLE_BEARER_TOKEN)
@@ -66,10 +75,52 @@ function dashboard(error, data, agg) {
   var HEIGHT = 300;
   var gap = 60, translate = 55;
 
+  sensible.charts.numberAccesses = dc.numberDisplay('#audit-accesses');
+  sensible.charts.numberAccessesAverage = dc.numberDisplay('#audit-accesses-avg');
+  sensible.charts.numberResearchers = dc.numberDisplay('#audit-researcher');
+  //sensible.charts.numberObservations = dc.numberDisplay('#audit-observations');
+
   sensible.dimensions.date = sensible.ndx.dimension(function(d) { return d3.time.month(d.date); });
   sensible.groups.accesses = sensible.dimensions.date.group().reduce(reduceAdd, reduceRemove, reduceInit);
   sensible.charts.composite = dc.compositeChart('#sensible-composite-chart');
   sensible.charts.accessHistogram = dc.barChart('#sensible-accesses-chart');
+
+  sensible.groups.unique = sensible.ndx.groupAll().reduce(
+    function (p, v) {
+      if (v.user) {
+        if (v.researcher in p.researchers)
+          p.researchers[v.researcher]++;
+        else p.researchers[v.researcher] = 1;
+        p.requestCount += v.requestCount;
+        p.dataCount += v.dataCount;
+      }
+      return p;
+    },
+    function (p, v) {
+      if (v.user) {
+        p.researchers[v.researcher]--;
+        if (p.researchers[v.researcher] === 0)
+          delete p.researchers[v.researcher];
+        p.requestCount -= v.requestCount;
+        p.dataCount -= v.dataCount;
+      }
+      return p;
+    },
+    function () { return { researchers : {}, requestCount : 0, dataCount : 0}}
+  );
+
+
+  sensible.charts.numberAccesses
+    .valueAccessor(function(d) { return d.requestCount;})
+    .group(sensible.groups.unique);
+  sensible.charts.numberAccessesAverage
+    .valueAccessor(function(d) { return d.dataCount;})
+    .group(sensible.groups.unique);
+  sensible.charts.numberResearchers
+    .valueAccessor(function(d) {
+      return Object.keys(d.researchers).length;
+    })
+    .group(sensible.groups.unique);
 
   sensible.composite.user = dc.barChart(sensible.charts.composite)
     .gap(gap)
@@ -151,6 +202,9 @@ function dashboard(error, data, agg) {
     .elasticX(true)
     .valueAccessor(function(d) {
       return d.value.requests;
+    })
+    .label(function(d) {
+      return PROBE_SYMBOLS[d.key] + ' - ' + d.key;
     })
     .ordinalColors(colorbrewer.Dark2[6])
     .group(sensible.groups.probe);
