@@ -1,0 +1,95 @@
+#content {
+  padding-bottom: 60px;
+}
+
+.chart-title span {
+  color: #525252;
+  font-size: 20px;
+}
+
+.chart-title {
+  color: #333;
+  font-family: 'PT Sans', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  display: block;
+}
+
+.chart-description {
+  font-weight: 300;
+  margin: 0.2em 140px 0.2em 0;
+  line-height: 1.4em;
+}
+
+#sidebar {
+  max-width: 354px;
+}
+
+
+.box-stats {
+  background: white;
+  position: relative;
+  text-align: right;
+  margin-bottom: 30px;
+  height: 70px;
+  border: 1px solid #e1e6ef;
+}
+
+.box-stats .box-stat-thumbnail {
+  width: 100px;
+  height: 68px;
+  padding: 15px 0;
+  text-align: center;
+  margin-right: 10px;
+  float: left;
+  overflow: hidden;
+}
+
+.box-stats .box-value {
+  padding-top: 16px;
+  font-size: 16px;
+}
+
+.box-stats .box-value, .box-stats .box-title {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.box-stats .box-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 3px 0px;
+}
+
+.box-stats .box-stat-thumbnail.box-info {
+  background: #2980b9;
+}
+
+.box-stats .box-stat-thumbnail.box-warning {
+  background: #34495e;
+}
+
+.box-stats .box-stat-thumbnail.box-success {
+  background: #16a085;
+}
+
+.box-stats .box-stat-thumbnail.box-danger {
+  background: #d2322d;
+}
+
+.sensible-control {
+  margin: 5px 5px;
+}
+
+.sensible-researcher {
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.dc-chart g.row text {
+  font-family: "Ionicons";
+  fill: #000;
+  font-size: 16px;
+}

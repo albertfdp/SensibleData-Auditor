@@ -1,261 +1,326 @@
-'use strict';
+DATA_USER_URL = 'http://raman.imm.dtu.dk:8081/albert/sensible-dtu/audit/accesses';
+DATA_RESEARCHERS_URL = 'http://raman.imm.dtu.dk:8081/albert/sensible-dtu/audit/researchers';
 
-var sensible = (function() {
-
-  var sensible = {};
-
-  sensible.dimensions = function() {
-
-    var dimensions = {};
-
-    // names of the dimensions to be created
-    var list = ['researcher', 'accesses'];
-
-    return {
-
-      add : function(name, accessor) {
-        dimensions[name] = sensible.ndx.dimension(accessor);
-        return dimensions[name];
-      },
-
-      get : function(name) {
-        return dimensions[name];
-      },
-
-      list : function() {
-        return dimensions;
-      },
-
-    }
-
-  }();
-
-  sensible.groups = function() {
-
-    var groups = {};
-
-    return {
-      add : function(name, dcGroup) {
-        groups[name] = dcGroup;
-      },
-
-      get : function(name) {
-        return groups[name];
-      }
-    }
-
-  }();
-
-  sensible.charts = function() {
-
-    var _charts = {};
-
-    return {
-
-        add : function(name, dcChart) {
-            _charts[name] = dcChart;
-        },
-
-        get : function(name) {
-          return _charts[name];
-        },
-
-        has : function(name) {
-          return console.log('lolo ' + name);
-        }
-
-    }
-
-  }();
-
-
-  return sensible;
-
-
-})();
-
-function extract_researcher(path) {
-  return (RegExp('bearer\_token' + '=' + '(.+?)(&|$)').exec(path)||[,null])[1];
+var PROBE_SYMBOLS = {
+  bluetooth : '\uf116',
+  location : '\uf1ff',
+  facebook : '\uf231',
+  calllog : '\uf1e6',
+  sms : '\uf2e1',
+  questionnaire : '\uf12e'
 }
 
-function extract_resource(path) {
-  return (RegExp('\/connector_raw\/v1\/(.*)\/').exec(path)||[,null])[1];
+var DASHBOARD = {
+  charts : {
+    width : 1200,
+    height : 300
+  }
 }
 
-var DATA_URL = 'http://raman.imm.dtu.dk:8082/albert/apps/auditor_viewer/static/data/fake.json';
-var DATA_RESEARCHERS_URL = 'http://raman.imm.dtu.dk:8082/albert/apps/auditor_viewer/static/data/fake_researchers.json';
-/*
-var panel = $('#sensible-notification');
-panel.hide();
+queue()
+  .defer(d3.json, DATA_USER_URL + '?bearer_token=' + SENSIBLE_BEARER_TOKEN)
+  .defer(d3.json, DATA_RESEARCHERS_URL + '?bearer_token=' + SENSIBLE_BEARER_TOKEN)
+  .await(dashboard);
 
-var compositeChart = dc.compositeChart('#sensible-uniqueness-chart');
+var sensible = {};
+    sensible.dimensions = {},
+    sensible.groups = {},
+    sensible.charts = {},
+    sensible.composite = {};
 
-d3.json(DATA_RESEARCHERS_URL)
-  .on('load', function(data) {
+function dashboard(error, data, agg) {
 
-    // clean data
-    data.children.forEach(function(d) {
+  if (error) return showErrorMessage(error);
 
-      d.time = new Date(d3.time.format.utc(d.time));
-      d.month = d3.time.month(d.time);
-      d.researcher = extract_researcher(d.path);
-      d.resource = extract_resource(d.path);
+  if (data.result.length == 0)
+    showWarningMessage('No data about you was returned from the server. It seems that no one was looking at you. That\'s good!');
 
-    });
+  sensible.ndx = crossfilter();
+  // parse the data
+  data.result.forEach(function(d) {
+    var formatter = d3.time.format("%Y-%j");
+    d.user = true;
+    d.date = new Date(formatter.parse(d.date.y + '-' + d.date.d));
+  });
+  agg.result.forEach(function(d) {
+    var formatter = d3.time.format("%Y-%j");
+    d.user = false;
+    d.date = new Date(formatter.parse(d.date.y + '-' + d.date.d));
+  });
 
-    sensible.ndx = crossfilter(data.children);
-    sensible.dimensions.add('accesses', function(d) { return d._id; });
-    sensible.dimensions.add('researcher', function(d) { return d.researcher; });
-    sensible.dimensions.add('month', function(d) { return d.month});
+  sensible.ndx.add(data.result);
+  sensible.ndx.add(agg.result);
 
+  sensible.dimensions.date = sensible.ndx.dimension(function(d) {
+    return d.date;
+  });
 
+  sensible.dimensions.researcher = sensible.ndx.dimension(function(d) {
+    return d.researcher;
+  });
 
-  })
-  .get();
+  sensible.dimensions.probeSeries = sensible.ndx.dimension(function(d) {
+    return [d.date, d.probe];
+  });
 
-d3.json(DATA_URL)
-  .on('progress', function() {
-    panel
-      .show()
-      .removeClass('alert-danger').addClass('alert-info')
-      .empty().html('<p><strong>Info</strong> Fetching data from server. Please, be patient.</p>').delay(2000);
-  })
-  .on('load', function(data) {
-    panel.hide(600).removeClass('alert-info').removeClass('alert-error').empty();
+  sensible.dimensions.probe = sensible.ndx.dimension(function(d) {
+    return d.probe;
+  });
 
-    // clean data
-    data.children.forEach(function(d) {
+  sensible.groups.accesses = sensible.dimensions.date.group().reduce(
+      reduceAdd, reduceRemove, reduceInit);
 
-      d.time = new Date(d3.time.format.utc(d.time));
-      d.month = d3.time.month(d.time);
-      d.researcher = extract_researcher(d.path);
-      d.resource = extract_resource(d.path);
+  sensible.groups.accessPerResearcher = sensible.dimensions.researcher.group()
+    .reduce(reduceAdd, reduceRemove, reduceInit);
 
-    });
+  sensible.groups.probeHistogram = sensible.dimensions.probeSeries.group()
+    .reduce(reduceAdd, reduceRemove, reduceInit);
 
-    sensible.ndx = crossfilter(data.children);
+  sensible.groups.probe = sensible.dimensions.probe.group()
+    .reduce(reduceAdd, reduceRemove, reduceInit);
 
-    sensible.dimensions.add('accesses', function(d) { return d._id; });
-    sensible.dimensions.add('researcher', function(d) { return d.researcher; });
-    sensible.dimensions.add('month', function(d) { return d.month});
-    sensible.dimensions.add('resource', function(d) {return d.resource;});
+  var gap = 60, translate = 55;
 
-    sensible.groups.add('accessesCount', sensible.dimensions.get('accesses').groupAll().reduceCount());
-    sensible.groups.add('researcherAccessCount', sensible.dimensions.get('researcher').group().reduceCount());
-    sensible.groups.add('resourceCount', sensible.dimensions.get('resource').group().reduceCount());
+  sensible.charts.numberAccesses = dc.numberDisplay('#audit-accesses');
+  sensible.charts.numberAccessesAverage = dc.numberDisplay('#audit-accesses-avg');
+  sensible.charts.numberResearchers = dc.numberDisplay('#audit-researcher');
+  //sensible.charts.numberObservations = dc.numberDisplay('#audit-observations');
 
-    sensible.groups.add('accessUniqueness', sensible.dimensions.get('accesses').group().reduce(
-      function (p, v) {
-        ++p.count;
-        p.absUniqueness += 10;
-      },
-      function (p, v) {
-        --p.count;
-        p.absUniqueness -= 10;
-      },
-      function (p, v) {
-        return { count : 0, absUniqueness : 0};
+  sensible.dimensions.date = sensible.ndx.dimension(function(d) { return d3.time.month(d.date); });
+  sensible.groups.accesses = sensible.dimensions.date.group().reduce(reduceAdd, reduceRemove, reduceInit);
+  sensible.charts.composite = dc.compositeChart('#sensible-composite-chart');
+  sensible.charts.accessHistogram = dc.barChart('#sensible-accesses-chart');
+
+  sensible.groups.unique = sensible.ndx.groupAll().reduce(
+    function (p, v) {
+      if (v.user) {
+        if (v.researcher in p.researchers)
+          p.researchers[v.researcher]++;
+        else p.researchers[v.researcher] = 1;
+        p.requestCount += v.requestCount;
+        p.dataCount += v.dataCount;
       }
-    ));
-
-    // determine a histogram of percent changes
-    sensible.dimensions.add('fluctuation', function(d) {
-      return Math.round((d.me - d.them) / d.them * 100);
-    });
-    sensible.groups.add('fluctuation', sensible.dimensions.get('fluctuation').group());
-
-    sensible.groups.add('researcherCount', sensible.ndx.groupAll().reduce(
-      function (p, v) {
-        if (v.researcher in p.researchers) {
-          p.researchers[v.researcher] += 1;
-        }
-        else {
-          p.researchers[v.researcher] = 1;
-          p.count += 1;
-        }
-        return p;
-      },
-
-      function (p, v) {
-        p.researchers[v.researcher] -= 1;
-        if (p.researchers[v.researcher] === 0) {
+      return p;
+    },
+    function (p, v) {
+      if (v.user) {
+        p.researchers[v.researcher]--;
+        if (p.researchers[v.researcher] === 0)
           delete p.researchers[v.researcher];
-          p.count -= 1;
-        }
-        return p;
-      },
-
-      function (p, v) {
-        return { researchers : {}, count : 0};
+        p.requestCount -= v.requestCount;
+        p.dataCount -= v.dataCount;
       }
+      return p;
+    },
+    function () { return { researchers : {}, requestCount : 0, dataCount : 0}}
+  );
 
-    ));
 
-    sensible.groups.add('monthCount', sensible.dimensions.get('month').group().reduceCount());
+  sensible.charts.numberAccesses
+    .valueAccessor(function(d) { return d.requestCount;})
+    .group(sensible.groups.unique);
+  sensible.charts.numberAccessesAverage
+    .valueAccessor(function(d) { return d.dataCount;})
+    .group(sensible.groups.unique);
+  sensible.charts.numberResearchers
+    .valueAccessor(function(d) {
+      return Object.keys(d.researchers).length;
+    })
+    .group(sensible.groups.unique);
 
-    sensible.charts.add('accessCount', dc.numberDisplay('#audit-accesses'));
-    sensible.charts.get('accessCount')
-      .valueAccessor(function(d) {return d;})
-      .group(sensible.groups.get('accessesCount'));
-
-    sensible.charts.add('researcherCount', dc.numberDisplay('#audit-researcher'));
-    sensible.charts.get('researcherCount')
-      .valueAccessor(function(d) {
-          return d.count;
-      })
-      .group(sensible.groups.get('researcherCount'));
-
-    sensible.charts.add('accessHistogram', dc.barChart('#sensible-accesses-chart'));
-    sensible.charts.get('accessHistogram')
-        .dimension(sensible.dimensions.get('month'))
-        .group(sensible.groups.get('monthCount'))
-        .height(200)
-        .width(600)
-        .transitionDuration(1000)
-        //.gap(1)
-        .elasticY(true)
-        .renderHorizontalGridLines(true)
-        .x(d3.time.scale().domain([new Date(2014, 0, 1), new Date(2014, 11, 31)]))
-        .round(d3.time.month.round)
-        .alwaysUseRounding(true)
-        .xUnits(d3.time.months)
-        .yAxisLabel('Number of accesses')
-        .xAxisLabel('Month');
-
-    var monthFormatter = d3.time.format("%b %y");
-    sensible.charts.get('accessHistogram').xAxis().tickFormat(function(d){
-      return monthFormatter(d);
+  sensible.composite.user = dc.barChart(sensible.charts.composite)
+    .gap(gap)
+    .group(sensible.groups.accesses, "User")
+    .valueAccessor(function (d) {
+      return d.value.userCount;
     });
+  sensible.composite.average = dc.barChart(sensible.charts.composite)
+    .gap(gap)
+    .group(sensible.groups.accesses, "Average")
+    .valueAccessor(function (d) {
+      return (d.value.count / d.value.users);
+    })
+    .colors(d3.scale.ordinal().range(['#e34a33']));
 
-    sensible.charts.get('accessHistogram').yAxis().ticks(4);
+  sensible.charts.composite
+    .width(DASHBOARD.charts.width)
+    .height(DASHBOARD.charts.height)
+    .transitionDuration(1000)
+    .margins({top: 10, right: 0, bottom: 30, left: 50})
+    .dimension(sensible.dimensions.date)
+    .group(sensible.groups.accesses)
+    .elasticY(true)
+    .yAxisLabel('Data points accessed')
+    .rangeChart(sensible.charts.accessHistogram)
+    .legend(dc.legend().x(80).y(20).itemHeight(13).gap(5))
+    .x(d3.time.scale().domain([new Date(2013, 6, 1), new Date(2014, 6, 31)]))
+	  .xUnits(d3.time.months)
+	  .round(d3.time.month.round)
+	  .renderHorizontalGridLines(true)
+    .compose([sensible.composite.user, sensible.composite.average])
+      .brushOn(false)
+     .renderlet(function (chart) {
+	       chart.selectAll("g._1").attr("transform", "translate(" + translate + ", 0)");
+      });
 
-    sensible.charts.add('researcherAccesses', dc.rowChart('#sensible-researcher-chart'));
-    sensible.charts.get('researcherAccesses')
-        .height(400)
-        .width(300)
-        .margins({top: 10, right: 50, bottom: 30, left: 0})
-        .dimension(sensible.dimensions.get('researcher'))
-        .group(sensible.groups.get('researcherAccessCount'));
-
-    sensible.charts.add('resourceChart', dc.rowChart('#sensible-resource-chart'));
-    sensible.charts.get('resourceChart')
-        .height(400)
-        .width(300)
-        .margins({top: 10, right: 50, bottom: 30, left: 0})
-        .dimension(sensible.dimensions.get('resource'))
-        .group(sensible.groups.get('resourceCount'));
-
-    compositeChart.compose([sensible.charts.add('accessHistogram')]);
-
-    dc.renderAll();
 
 
-  })
-  .on('error', function(error) {
-    panel
-      .show()
-      .removeClass('alert-info').addClass('alert-danger')
-      .empty().html('<p><strong>Error!</strong> Could not fetch data from server. Please try again.</p>').delay(2000).hide(600);
-  })
-  .get();
-*/
+
+  sensible.charts.accessHistogram
+    .height(60)
+    .width(1200)
+    .centerBar(true)
+    //.renderArea(true)
+    //.dashStyle([3,1,1,1])
+    .dimension(sensible.dimensions.date)
+    .group(sensible.groups.accesses)
+    .x(d3.time.scale().domain([new Date(2013, 6, 1), new Date(2014, 6, 31)]))
+    .margins({top: 10, right: 0, bottom: 30, left: 50})
+    .xUnits(d3.time.days)
+    .elasticY(true)
+    //.renderTitle(true)
+    //.legend(dc.legend().x(80).y(20).itemHeight(13).gap(5))
+    .brushOn(true)
+    .valueAccessor(function(d) {
+      return d.value.userRequests;
+    }).yAxis().ticks(0);
+
+  sensible.charts.researchers = dc.rowChart('#sensible-researchers');
+  $('#sensible-researchers-title').text('avg data accesses per researcher');
+  sensible.charts.researchers
+    .height(DASHBOARD.charts.height / 2)
+    .width(DASHBOARD.charts.width / 2)
+    .margins({top: 10, right: 5, bottom: 30, left: 10})
+    .dimension(sensible.dimensions.researcher)
+    .elasticX(true)
+    .valueAccessor(function(d) {
+      return (d.value.users == 0) ? 0 : d.value.count / d.value.users;
+    })
+    .ordinalColors(colorbrewer.Spectral[9])
+    .group(sensible.groups.accessPerResearcher);
+
+  sensible.charts.probesCount = dc.rowChart('#sensible-probes');
+  $('#sensible-probes-title').text('avg data accesses per probe');
+  sensible.charts.probesCount
+    .height(DASHBOARD.charts.height / 2)
+    .width(DASHBOARD.charts.width / 2)
+    .margins({top: 10, right: 5, bottom: 30, left: 10})
+    .dimension(sensible.dimensions.probe)
+    .elasticX(true)
+    .valueAccessor(function(d) {
+        return (d.value.users == 0) ? 0 : d.value.count / d.value.users;
+    })
+    .label(function(d) {
+      return PROBE_SYMBOLS[d.key] + ' - ' + d.key;
+    })
+    .ordinalColors(colorbrewer.Dark2[6])
+    .group(sensible.groups.probe);
+
+  sensible.charts.probes = dc.seriesChart('#sensible-probes-histogram');
+  sensible.charts.probes
+    .height(DASHBOARD.charts.height)
+    .width(DASHBOARD.charts.width)
+    .chart(function(c) {
+      return dc.lineChart(c)
+        .interpolate('basis')
+        .dashStyle([3,1,1,1])
+        .renderDataPoints({radius: 5, fillOpacity: 0.8, strokeOpacity: 0.8});
+      })
+    .seriesAccessor(function(d) {
+        return d.key[1];
+    })
+    .keyAccessor(function(d) {return d.key[0];})
+    .margins({top: 10, right: 0, bottom: 30, left: 50})
+    .dimension(sensible.dimensions.probeSeries)
+    .x(d3.time.scale().domain([new Date(2013, 6, 1), new Date(2014, 6, 31)]))
+    .xUnits(d3.time.days)
+    .elasticY(true)
+    .brushOn(false)
+    //.rangeChart(sensible.charts.accessHistogram)
+    .renderHorizontalGridLines(true)
+    .legend(dc.legend().x(80).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70))
+    .valueAccessor(function(d) {
+      return +d.value.requests;
+    })
+    .group(sensible.groups.probeHistogram);
+    sensible.charts.probes.yAxis().tickFormat(function(d) {
+        return d;
+    });
+  sensible.charts.probes.xAxis().tickFormat(d3.time.format("%b"));
+
+
+  $('#control-accesses').on('change', function(event) {
+    var target = event.target;
+    if (target.id == 'requests') {
+      Object.keys(sensible.charts).forEach(function(chart) {
+
+        if (chart == 'composite') {
+          sensible.composite.user
+            .valueAccessor(function(d) { return d.value.userRequests;});
+          sensible.composite.average
+            .valueAccessor(function(d) { return d.value.requests;});
+          sensible.charts[chart].compose([sensible.composite.user, sensible.composite.average]).render();
+        } else if (chart == 'researchers' || chart == 'probesCount' || chart == 'probes') {
+          sensible.charts[chart].valueAccessor(function(d) { return d.value.requests;}).render();
+        }
+      });
+    } else if (target.id == 'count'){
+      Object.keys(sensible.charts).forEach(function(chart) {
+        if (chart == 'composite') {
+          sensible.composite.user
+            .valueAccessor(function(d) { return d.value.userCount;});
+          sensible.composite.average
+            .valueAccessor(function(d) { return d.value.count / d.value.users;});
+          sensible.charts[chart].compose([sensible.composite.user, sensible.composite.average]).render();
+        } else if (chart == 'researchers' || chart == 'probesCount' || chart == 'probes'){
+          sensible.charts[chart].valueAccessor(function(d) {
+            return d.value.count;
+          }).render();
+        }
+      });
+    }
+  });
+
+  dc.renderAll();
+
+
+}
+
+function showWarningMessage(message) {
+  $('#audit-error').addClass('alert alert-warning')
+    .append('<p><strong>Warning!</strong> There was a problem.<p>')
+    .append('<p>' + message + '</p>');
+}
+
+function showErrorMessage(error) {
+  $('#audit-error').addClass('alert alert-danger')
+    .append('<p><strong>Error!</strong> Something went wrong.<p>')
+    .append('<p>' + error.status + ' ' + error.statusText + '</p>');
+  console.error(error);
+}
+
+function reduceAdd(p, v) {
+  if (v.user) {
+    p.userCount += v.dataCount;
+    p.userRequests += v.requestCount;
+  } else {
+    p.requests += v.requestCount;
+    p.count += v.dataCount;
+    p.users += v.users;
+  }
+  return p;
+}
+
+function reduceRemove(p, v) {
+  if (v.user) {
+    p.userCount -= v.dataCount;
+    p.userRequests -= v.requestCount;
+  } else {
+    p.requests -= v.requestCount;
+    p.count -= v.dataCount;
+    p.users -= v.users;
+  }
+  return p;
+}
+
+function reduceInit() { return {count : 0, requests: 0, users : 0, userCount : 0, userRequests : 0}};

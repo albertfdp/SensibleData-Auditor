@@ -32,8 +32,8 @@ body {
   margin: 20px 0;
 }
 
-.container {
-  width: 100%;
+#content {
+  width: 90%;
 }
 
 /*
@@ -61,65 +61,4 @@ body {
 .nav-sidebar > .active > a {
   color: #fff;
   background-color: #428bca;
-}
-
-.box-stats {
-  background: white;
-  position: relative;
-  text-align: right;
-  margin-bottom: 30px;
-  height: 70px;
-  border: 1px solid #e1e6ef;
-}
-
-.box-stats .box-stat-thumbnail {
-  width: 100px;
-  height: 68px;
-  padding: 15px 0;
-  text-align: center;
-  margin-right: 10px;
-  float: left;
-  overflow: hidden;
-}
-
-.box-stats .box-value {
-  padding-top: 16px;
-  font-size: 16px;
-}
-
-.box-stats .box-value, .box-stats .box-title {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.box-stats .box-title {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 3px 0px;
-}
-
-.box-stats .box-stat-thumbnail.box-info {
-  background: #36a9e1;
-}
-
-.box-stats .box-stat-thumbnail.box-warning {
-  background: #ed9c28;
-}
-
-.box-stats .box-stat-thumbnail.box-success {
-  background: #47a447;
-}
-
-.box-stats .box-stat-thumbnail.box-danger {
-  background: #d2322d;
-}
-
-.sensible-control {
-  margin: 5px 5px;
-}
-
-.dc-chart g.row text {
-  font-family: "Ionicons";
 }

@@ -28,10 +28,6 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    return render_to_response('dashboard.html', {}, context_instance=RequestContext(request))
-
-@login_required
-def dashboard_researchers(request):
 	"""
 	tokens = getTokens(request)
 	scope = 'connector_raw.all_data=checked'
@@ -39,8 +35,8 @@ def dashboard_researchers(request):
 	if not tokens:
 		return render_to_response('sensible/start_auth.html', {'scope': scope, 'dashboard_url': settings.SERVICE_URL+'researcher/'}, context_instance=RequestContext(request))
 	"""
-	tokens = {'bearer_token': 'aec2a27aa6ad3feb01eb2fe8c6ebd3'}
-	return render_to_response('researchers.html', {'tokens' : tokens}, context_instance=RequestContext(request))
+	tokens = {'bearer_token': '6a1827c7541be2db5a7db2be821f25'}
+	return render_to_response('dashboard.html', {'tokens' : tokens}, context_instance=RequestContext(request))
 
 def dashboard_probes(request):
     return render_to_response('accesses.html', {}, context_instance=RequestContext(request))
